@@ -18,7 +18,7 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12 bg-light ">
-      <form action="" class="mx-4 mt-4 mb-0 alert alert-dark p-3" method="post" enctype="multipart/form-data">
+      <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="mx-4 mt-4 mb-0 alert alert-dark p-3" method="post" enctype="multipart/form-data">
         <div class="custom-file w-auto">
           <input type="hidden" name="MAX_FILE_SIZE" value="100000000">
           <input type="file" class="custom-file-input" id="customFile" name="file_upload" required>
