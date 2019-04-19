@@ -17,28 +17,40 @@
   <h1 class="text-center p-3">Images Gallery</h1>
 <div class="container">
   <div class="row">
-    <div class="col-lg-12 bg-light ">
-      <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="mx-4 mt-4 mb-0 alert alert-dark p-3" method="post" enctype="multipart/form-data">
+    <div class="col-lg-12 bg-light mb-5">
+      <form action="" class="mx-4 mt-4 mb-0 alert alert-dark p-3" method="post" enctype="multipart/form-data">
         <div class="custom-file w-auto">
-          <input type="hidden" name="MAX_FILE_SIZE" value="100000000">
+          <input type="hidden" name="MAX_FILE_SIZE" value="400000000">
           <input type="file" class="custom-file-input" id="customFile" name="file_upload" required>
           <label class="custom-file-label" for="customFile">Choose file</label>
         </div>
         
-        <button class="btn btn-primary d-inline-block mt-1" type="submit">Upload Image</button>
+        <button class="btn btn-primary d-inline-block mt-1" type="submit">Upload Image</button>        
       </form>
-    
+
+
       <div class="d-flex flex-wrap justify-content-center">      
 
         <?php 
+        // Define these errors in an array
+        $upload_errors = array(
+          UPLOAD_ERR_OK 			  	=> "No errors.",
+          UPLOAD_ERR_INI_SIZE  		=> "Larger than upload_max_filesize.",
+          UPLOAD_ERR_FORM_SIZE 		=> "Larger than form MAX_FILE_SIZE.",
+          UPLOAD_ERR_PARTIAL 			=> "Partial upload.",
+          UPLOAD_ERR_NO_FILE 			=> "No file.",
+          UPLOAD_ERR_NO_TMP_DIR 	=> "No temporary directory.",
+          UPLOAD_ERR_CANT_WRITE		=> "Can't write to disk.",
+          UPLOAD_ERR_EXTENSION 		=> "File upload stopped by extension.");
+
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
            if (isset($_GET['del'])) {
              unlink("images/".$_GET['del']);
              header("Location: index.php");
            }
         }
-        if($_SERVER['REQUEST_METHOD'] == "POST"){
-
+        if($_SERVER['REQUEST_METHOD'] == "POST"){  
+          
           // what file do we need to move?
           $tmp_file = $_FILES['file_upload']['tmp_name'];
 
@@ -48,15 +60,11 @@
 
           // set upload folder name
           $upload_dir = 'images';
-
+          
           // Now lets move the file
           // move_uploaded_file returns false if something went wrong
-          if(move_uploaded_file($tmp_file, $upload_dir . "/" . $target_file)){
-            $message = "File uploaded successfully";
-          } else {
-            $error = $_FILES['file_upload']['error'];
-            $message = $upload_errors[$error];
-          } // end of if
+          move_uploaded_file($tmp_file, $upload_dir . "/" . $target_file);
+
         } // end of if
 
         $dir = "images";        
@@ -69,7 +77,7 @@
               echo "<div class='card m-3' style='width: 18rem;'>";
                 echo "<img src='images/$file' class='card-img-top' alt='...'>";
                 echo "<div class='card-body'>";
-                  echo "<h5 class='card-title text-center'>$fileName</h5>";
+                  echo "<h5 class='card-title text-center mt-auto'>$fileName</h5>";
                   echo "<a href='index.php?del=$file' class='btn btn-outline-secondary d-block mx-auto'>Delete</a>";
                 echo "</div>";
               echo "</div>";              
@@ -82,6 +90,8 @@
          // end of if
         ?>
       </div>
+      <?php if(!empty($message)) {echo "<p>{$message}</p>";} ?>
+
 
 
     </div><!-- col-lg-12 -->
